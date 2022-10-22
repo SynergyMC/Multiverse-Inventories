@@ -1,6 +1,7 @@
 package com.onarandombox.multiverseinventories;
 
 import com.dumptruckman.minecraft.util.Logging;
+import com.onarandombox.multiverseinventories.util.MinecraftTools;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -60,10 +61,6 @@ public class DataStrings {
      * Player should load identifier.
      */
     public static final String PLAYER_SHOULD_LOAD = "shouldLoad";
-    /**
-     * Player last known name identifier.
-     */
-    public static final String PLAYER_LAST_KNOWN_NAME = "lastKnownName";
     /**
      * Player profile type identifier.
      */

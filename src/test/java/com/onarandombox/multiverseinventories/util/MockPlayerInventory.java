@@ -5,8 +5,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -126,6 +129,16 @@ public class MockPlayerInventory implements PlayerInventory {
         } else {
             throw new ArrayIndexOutOfBoundsException();
         }
+    }
+
+    @Override
+    public void setItem(@NotNull EquipmentSlot equipmentSlot, @Nullable ItemStack itemStack) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public @NotNull ItemStack getItem(@NotNull EquipmentSlot equipmentSlot) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

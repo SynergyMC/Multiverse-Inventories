@@ -111,34 +111,6 @@ public class InventoriesListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void playerPreLogin(AsyncPlayerPreLoginEvent event) {
-        if (event.getLoginResult() != Result.ALLOWED) {
-            return;
-        }
-
-        Logging.finer("Loading global profile for Player{name:'%s', uuid:'%s'}.",
-                event.getName(), event.getUniqueId());
-
-        GlobalProfile globalProfile = inventories.getData().getGlobalProfile(event.getName(), event.getUniqueId());
-        if (!globalProfile.getLastKnownName().equalsIgnoreCase(event.getName())) {
-            // Data must be migrated
-            Logging.info("Player %s changed name from '%s' to '%s'. Attempting to migrate playerdata...",
-                    event.getUniqueId(), globalProfile.getLastKnownName(), event.getName());
-            try {
-                inventories.getData().migratePlayerData(globalProfile.getLastKnownName(), event.getName(),
-                        event.getUniqueId(), true);
-            } catch (IOException e) {
-                Logging.severe("An error occurred while trying to migrate playerdata.");
-                e.printStackTrace();
-            }
-
-            globalProfile.setLastKnownName(event.getName());
-            inventories.getData().updateGlobalProfile(globalProfile);
-            Logging.info("Migration complete!");
-        }
-    }
-
     /**
      * Called when a player joins the server.
      *
@@ -308,6 +280,10 @@ public class InventoriesListener implements Listener {
         }, 2L);
     }
 
+    private boolean shouldHandlePlayerRespawn(PlayerRespawnEvent event) {
+        return !event.isBedSpawn() && !event.isAnchorSpawn();
+    }
+
     /**
      * Handles player respawns at the LOWEST priority.
      *
@@ -315,7 +291,7 @@ public class InventoriesListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void lowestPriorityRespawn(PlayerRespawnEvent event) {
-        if (!event.isBedSpawn()) {
+        if (shouldHandlePlayerRespawn(event)) {
             World world = event.getPlayer().getWorld();
             this.currentGroups = this.inventories.getGroupManager()
                     .getGroupsForWorld(world.getName());
@@ -330,7 +306,7 @@ public class InventoriesListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOW)
     public void lowPriorityRespawn(PlayerRespawnEvent event) {
-        if (!event.isBedSpawn()) {
+        if (shouldHandlePlayerRespawn(event)) {
             this.handleRespawn(event, EventPriority.LOW);
         }
     }
@@ -342,7 +318,7 @@ public class InventoriesListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void normalPriorityRespawn(PlayerRespawnEvent event) {
-        if (!event.isBedSpawn()) {
+        if (shouldHandlePlayerRespawn(event)) {
             this.handleRespawn(event, EventPriority.NORMAL);
         }
     }
@@ -354,7 +330,7 @@ public class InventoriesListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void highPriorityRespawn(PlayerRespawnEvent event) {
-        if (!event.isBedSpawn()) {
+        if (shouldHandlePlayerRespawn(event)) {
             this.handleRespawn(event, EventPriority.HIGH);
         }
     }
@@ -366,7 +342,7 @@ public class InventoriesListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void highestPriorityRespawn(PlayerRespawnEvent event) {
-        if (!event.isBedSpawn()) {
+        if (shouldHandlePlayerRespawn(event)) {
             this.handleRespawn(event, EventPriority.HIGHEST);
         }
     }
@@ -378,7 +354,7 @@ public class InventoriesListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void monitorPriorityRespawn(PlayerRespawnEvent event) {
-        if (!event.isBedSpawn()) {
+        if (shouldHandlePlayerRespawn(event)) {
             this.handleRespawn(event, EventPriority.MONITOR);
             this.updateCompass(event);
         }

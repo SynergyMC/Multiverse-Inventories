@@ -7,12 +7,20 @@ import com.onarandombox.multiverseinventories.DataStrings;
 import com.onarandombox.multiverseinventories.PlayerStats;
 import com.onarandombox.multiverseinventories.profile.PlayerProfile;
 import com.onarandombox.multiverseinventories.util.MinecraftTools;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataAdapterContext;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
+
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * The Sharables class is where all the default Sharable instances are located as constants as well as a factory class
@@ -157,12 +166,7 @@ public final class Sharables implements Shares {
             new SharableHandler<Double>() {
                 @Override
                 public void updateProfile(PlayerProfile profile, Player player) {
-                    double health = player.getHealth();
-                    // Player is dead, so health should be regained to full.
-                    if (health <= 0) {
-                        health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-                    }
-                    profile.set(HEALTH, health);
+                    profile.set(HEALTH, (double) player.getHealth());
                 }
 
                 @Override
@@ -176,7 +180,7 @@ public final class Sharables implements Shares {
                         player.setHealth(value);
                     } catch (IllegalArgumentException e) {
                         Logging.fine("Invalid value '" + value + "': " + e.getMessage());
-                        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+                        player.setHealth(PlayerStats.HEALTH);
                         return false;
                     }
                     return true;
@@ -185,7 +189,7 @@ public final class Sharables implements Shares {
             .altName("health").altName("hp").altName("hitpoints").build();
 
     /**
-     * Sharing Remaining Air.
+     * Sharing Health.
      */
     public static final Sharable<Integer> REMAINING_AIR = new Sharable.Builder<Integer>("remaining_air", Integer.class,
             new SharableHandler<Integer>() {
@@ -213,7 +217,7 @@ public final class Sharables implements Shares {
             }).stringSerializer(new ProfileEntry(true, DataStrings.PLAYER_REMAINING_AIR)).build();
 
     /**
-     * Sharing Maximum Air.
+     * Sharing Health.
      */
     public static final Sharable<Integer> MAXIMUM_AIR = new Sharable.Builder<Integer>("maximum_air", Integer.class,
             new SharableHandler<Integer>() {
@@ -241,7 +245,7 @@ public final class Sharables implements Shares {
             }).stringSerializer(new ProfileEntry(true, DataStrings.PLAYER_MAX_AIR)).build();
 
     /**
-     * Sharing Fall Distance.
+     * Sharing Health.
      */
     public static final Sharable<Float> FALL_DISTANCE = new Sharable.Builder<Float>("fall_distance", Float.class,
             new SharableHandler<Float>() {
@@ -270,7 +274,7 @@ public final class Sharables implements Shares {
             .altName("falling").build();
 
     /**
-     * Sharing Fire Ticks.
+     * Sharing Health.
      */
     public static final Sharable<Integer> FIRE_TICKS = new Sharable.Builder<Integer>("fire_ticks", Integer.class,
             new SharableHandler<Integer>() {
@@ -328,7 +332,7 @@ public final class Sharables implements Shares {
             }).stringSerializer(new ProfileEntry(true, DataStrings.PLAYER_EXPERIENCE)).build();
 
     /**
-     * Sharing Level.
+     * Sharing Experience.
      */
     public static final Sharable<Integer> LEVEL = new Sharable.Builder<Integer>("lvl", Integer.class,
             new SharableHandler<Integer>() {
@@ -356,7 +360,7 @@ public final class Sharables implements Shares {
             }).stringSerializer(new ProfileEntry(true, DataStrings.PLAYER_LEVEL)).build();
 
     /**
-     * Sharing Total Experience.
+     * Sharing Experience.
      */
     public static final Sharable<Integer> TOTAL_EXPERIENCE = new Sharable.Builder<Integer>("total_xp", Integer.class,
             new SharableHandler<Integer>() {
