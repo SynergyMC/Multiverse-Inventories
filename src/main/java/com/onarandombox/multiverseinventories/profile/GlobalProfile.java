@@ -41,18 +41,6 @@ public final class GlobalProfile {
     }
 
     /**
-     * Returns the name of the player.
-     *
-     * @return The name of the player.
-     * @deprecated Use {@link #getPlayerUUID()} to uniquely identify a player.
-     *             If you need player name, use {@link #getLastKnownName()}.
-     */
-    @Deprecated
-    public String getPlayerName() {
-        return this.lastKnownName;
-    }
-
-    /**
      * Returns the UUID of the player.
      *
      * @return the UUID of the player.
@@ -103,7 +91,6 @@ public final class GlobalProfile {
         return "GlobalProfile{" +
                 "uuid=" + uuid +
                 ", lastWorld='" + lastWorld + '\'' +
-                ", lastKnownName='" + lastKnownName + '\'' +
                 ", loadOnLogin=" + loadOnLogin +
                 '}';
     }
