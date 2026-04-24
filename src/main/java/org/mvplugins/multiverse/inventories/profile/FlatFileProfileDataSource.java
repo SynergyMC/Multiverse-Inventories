@@ -57,7 +57,7 @@ final class FlatFileProfileDataSource implements ProfileDataSource {
 
     private FileConfiguration loadFileToJsonConfiguration(File file) {
         JsonConfiguration jsonConfiguration = new JsonConfiguration();
-        jsonConfiguration.options().continueOnSerializationError(true);
+        jsonConfiguration.options().continueOnSerializationError(false);
         Try.run(() -> jsonConfiguration.load(file)).getOrElseThrow(e -> {
             Logging.severe("Could not load file %s : %s", file, e.getMessage());
             e.printStackTrace();
